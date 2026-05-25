@@ -1,3 +1,7 @@
+import os
+os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "0"
+os.environ["DISPLAY"] = ""
+
 from fastapi import FastAPI, File, UploadFile
 from ultralytics import YOLO
 from PIL import Image
