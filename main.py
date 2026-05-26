@@ -1,11 +1,11 @@
 import os
 os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "0"
-os.environ["DISPLAY"] = ""
 
 from fastapi import FastAPI, File, UploadFile
 from ultralytics import YOLO
 from PIL import Image
 import io
+import numpy as np
 
 app = FastAPI()
 model = YOLO("best.pt")
@@ -17,8 +17,9 @@ def home():
 @app.post("/detect")
 async def detect(file: UploadFile = File(...)):
     contents = await file.read()
-    image = Image.open(io.BytesIO(contents))
-    results = model(image)
+    image = Image.open(io.BytesIO(contents)).convert("RGB")
+    image_array = np.array(image)
+    results = model(image_array)
 
     detections = []
     for box in results[0].boxes:
